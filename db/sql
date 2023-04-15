@@ -1,0 +1,117 @@
+create table if not exists cart
+(
+    cart_uniq_id       varchar(255)         not null
+        primary key,
+    clothes_id         int                  not null comment 'ID одежды',
+    clothes_to_size_id int                  not null comment 'ID размера',
+    design_id          int                  not null comment 'ID дизайна',
+    design_size_id     int                  not null comment 'размер дизайна ',
+    count              int                  not null comment 'количество',
+    status             tinyint(1) default 0 not null comment '0 - не оплачено.
+1 - оплачено.',
+    constraint cart_pk2
+        unique (cart_uniq_id)
+)
+    comment 'корзина';
+
+create table if not exists category
+(
+    category_id        int auto_increment
+        primary key,
+    category_name      varchar(255) not null comment 'Имя категории',
+    description        text         not null comment 'описание категории',
+    preview_img_path   text         not null comment 'изображении категории',
+    parent_category_id int          null comment 'родительская категория'
+)
+    comment 'Все разделы';
+
+create table if not exists clothes
+(
+    clothes_id          int auto_increment
+        primary key,
+    img_path            text                 not null comment 'путь к изображению одежды',
+    price               int                  not null comment 'цена без дизайна',
+    visible             tinyint(1) default 1 not null comment 'Видимость на сайте',
+    name                varchar(255)         not null comment 'название',
+    size_table_img_path text                 not null,
+    color               text                 null,
+    clothes_type        int                  not null comment 'тип одежды
+0  - футболка
+1 - свитшот
+2 - худи'
+)
+    comment 'Только одежда / база для вышивок';
+
+create table if not exists clothes_to_size
+(
+    clothes_id int           not null comment 'ID одежды',
+    size       varchar(10)   not null comment 'символьное обозначение например s или l',
+    count      int default 0 not null comment 'количество в наличии'
+)
+    comment 'Отношение одежды к размерам и количеству ';
+
+create table if not exists design
+(
+    design_id     int auto_increment
+        primary key,
+    design_path   text                 not null comment 'Путь к картинке дизайна без фона!',
+    name          varchar(255)         not null comment 'название рисунка',
+    description   text                 not null comment 'Описание',
+    design_price  int                  not null comment 'цена только дизайна, без учёта футболки',
+    visible       tinyint(1) default 1 not null comment 'Видимость на сайте',
+    visible_count int        default 0 not null comment 'Количество просмотров(не уникальных) считать при запросе дизайна'
+)
+    comment 'Все дизайны, которые существуют. Конкретные картинки вышивок';
+
+create table if not exists design_size
+(
+    id          int  not null comment 'ID дизайна',
+    size_name   text not null comment 'название размера',
+    description text not null comment 'Описание',
+    price       int  not null comment 'добавочная стоимость'
+)
+    comment 'размеры вышивок к дизайну';
+
+create table if not exists design_to_category
+(
+    design_id   int not null,
+    category_id int not null
+)
+    comment 'отношение дизайна к категориям';
+
+create table if not exists design_to_clothes
+(
+    clothes_id           int           not null comment 'ID футболки или прочей основы для дизайна',
+    design_id            int           not null comment 'ID дизайна',
+    x_margin_left        int default 0 not null comment 'отступ дизайна с левого края от картинки одежды в пикселях',
+    y_margin_top         int default 0 not null comment 'отступ дизайна с верхнего края от картинки одежды в пикселях',
+    position_name        int default 0 null comment '0 = по центру
+1 = слева
+2 = справа',
+    design_img_height_px int default 0 not null comment 'высота картинки в пикселях',
+    design_img_width_px  int default 0 not null comment 'ширина картинки в пикселях',
+    id                   int           not null comment 'ID. используется в корзине для определения положения дизайна'
+        primary key
+)
+    comment 'Отношения дизайнов и одежды';
+
+create table if not exists orders
+(
+    order_id       int          not null comment 'ID '
+        primary key,
+    cart_id        varchar(255) not null comment 'ID корзины',
+    first_name     varchar(100) not null comment 'имя',
+    last_name      varchar(100) not null comment 'фамилия',
+    middle_name    varchar(100) not null comment 'отчество',
+    phone          int          null comment 'номер телефона',
+    msg_address    int          not null comment 'адрес получателя ',
+    total_amount   int          not null comment 'сумма без скидок',
+    delivery_price int          not null comment 'цена доставки',
+    discount       int          not null comment 'скидка',
+    promocode_id   int          not null comment 'ID промокода',
+    result_amount  int          not null comment 'итого к оплате',
+    constraint orders_pk2
+        unique (order_id)
+)
+    comment 'заказы';
+

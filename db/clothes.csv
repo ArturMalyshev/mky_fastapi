@@ -1,0 +1,7 @@
+clothes_id,img_path,price,visible,name,size_table_img_path,color,clothes_type
+1,/img/clothes/t_black.jpeg,1000,1,Футболка | чёрная,/img/clothes/sizes/t.png,black,0
+2,/img/clothes/t_white.jpeg,1000,1,Футболка | белая,/img/clothes/sizes/t.png,white,0
+3,/img/clothes/sw_beige.jpeg,2000,1,Свитшот | бежевый,/img/clothes/sizes/sw.png,beige,1
+4,/img/clothes/sw_black.jpeg,2000,1,Свитшот | чёрный,/img/clothes/sizes/sw.png,black,1
+5,/img/clothes/h_beige.jpeg,2500,1,Худи | бежевый,/img/clothes/sizes/h.png,beige,2
+6,/img/clothes/h_black.jpeg,2500,1,Худи | чёрный,/img/clothes/sizes/h.png,black,2
