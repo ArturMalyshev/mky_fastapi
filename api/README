@@ -1,0 +1,7 @@
+RUN DOCKER ---------------  docker run -it -p 8888:8000 kartuh/py_api
+RUN DOCKER BUILD ---------  docker build -t kartuh/py_api .
+
+RUN API ------------------  python -m uvicorn main:app --reload
+
+
+docker run --name mysqli -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root --restart unless-stopped mysql:8
