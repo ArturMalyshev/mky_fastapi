@@ -83,8 +83,8 @@ def get_designs_preview(db, category_id, visible:bool):
     return designs
 
 def get_design(db1, db2, design_id, show_if_invisible:bool):
-    design_clothes = getClothes(db1, db2)
-    design_sizes = getDesignSizes(db1)
+    design_clothes = getClothes(db1, db2, design_id)
+    design_sizes = getDesignSizes(db1, design_id)
 
     sql = "SELECT * FROM design WHERE design_id=" + str(design_id)
 

@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class ClothesBaseModel(BaseModel):
     id: int
     name: str
@@ -32,16 +33,24 @@ class Clothes(object):
             "sizes": self.sizes
         }
 
-def getClothes(db, db2):
+
+def getClothes(db, db2, design_id):
     clothes = []
 
-    sql = "SELECT * FROM clothes c"
+    ids = []
+    sql = "SELECT * FROM design_to_clothes WHERE design_id =" + str(design_id)
+    db.execute(sql)
+
+    for item in db:
+        ids.append(str(item[0]))
+
+    sql = "SELECT * FROM clothes c WHERE clothes_id IN (" + ", ".join(ids) + ");"
     db.execute(sql)
 
     for item in db:
         db2.execute("SELECT * FROM clothes_to_size WHERE count > 0 AND clothes_id=" + str(item[0]))
 
-        print(item[0])
+        print(", ".join(str(x) for x in item))
 
         sizes = []
 
