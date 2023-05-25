@@ -50,8 +50,6 @@ def getClothes(db, db2, design_id):
     for item in db:
         db2.execute("SELECT * FROM clothes_to_size WHERE count > 0 AND clothes_id=" + str(item[0]))
 
-        print(", ".join(str(x) for x in item))
-
         sizes = []
 
         for size in db2:

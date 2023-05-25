@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from model.Clothes.clothes import ClothesBaseModel, getClothes
 from model.Design.size import DesignSizeBaseModel, getDesignSizes
+from model.Design.place import DesignPlaceBaseModel, getDesignPlaces
 
 
 class DesignBaseModel(BaseModel):
@@ -13,6 +14,7 @@ class DesignBaseModel(BaseModel):
     image: str
     price: float
     clothes: list[ClothesBaseModel]
+    place_variants: list[DesignPlaceBaseModel]
     size_variants: list[DesignSizeBaseModel]
 
 
@@ -30,15 +32,17 @@ class Design(object):
         image = ""
         price = 0.00
         clothes = []
+        place_variants = []
         size_variants = []
 
-        def __init__(self, design_id, name, description, image, price=None, clothes_array=None, size_variants_array=None):
+        def __init__(self, design_id, name, description, image, price=None, clothes_array=None, place_variants_array=None, size_variants_array=None):
             self.id = design_id
             self.name = name
             self.description = description
             self.image = image
             self.price = price
             self.clothes = clothes_array
+            self.place_variants = place_variants_array
             self.size_variants = size_variants_array
 
         def asdictShort(self):
@@ -52,6 +56,8 @@ class Design(object):
         def asdict(self):
             if self.clothes is None:
                 self.clothes = []
+            if self.place_variants is None:
+                self.place_variants = []
             if self.size_variants is None:
                 self.size_variants = []
             if self.price is None:
@@ -64,6 +70,7 @@ class Design(object):
                 "image": self.image,
                 "price": self.price,
                 "clothes": self.clothes,
+                "place_variants": self.place_variants,
                 "size_variants": self.size_variants
             }
 
@@ -84,7 +91,8 @@ def get_designs_preview(db, category_id, visible:bool):
 
 def get_design(db1, db2, design_id, show_if_invisible:bool):
     design_clothes = getClothes(db1, db2, design_id)
-    design_sizes = getDesignSizes(db1, design_id)
+    design_sizes = getDesignSizes(db1)
+    design_places = getDesignPlaces(db1, design_id)
 
     sql = "SELECT * FROM design WHERE design_id=" + str(design_id)
 
@@ -95,6 +103,6 @@ def get_design(db1, db2, design_id, show_if_invisible:bool):
     result = None
 
     for design in db1:
-        result = Design(design[0], design[2], design[3], design[1], design[4], design_clothes, design_sizes).asdict()
+        result = Design(design[0], design[2], design[3], design[1], design[4], design_clothes, design_places, design_sizes).asdict()
 
     return result

@@ -1,6 +1,10 @@
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Body, FastAPI
+from fastapi import FastAPI
 from mysql.connector import connect, Error
+
+from model.Cart.cart import CartBaseModel, CartResponse
+from model.Cart.get import CartCountBaseModel, users_cart_count, get_cart
+from model.Cart.add import cart_add_design, AddToCartBaseModel, AddToCartBody
 from config.cors import origins
 from model.Category.category import get_category, CategoryResult
 from model.Design.design import get_design, DesignBaseModel
@@ -22,6 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # get category + breadcrumbs
 @app.get("/catalog/{category_id}")
 async def get_category_by_id(category_id:int) -> CategoryResult:
@@ -34,8 +39,24 @@ async def get_category_by_id(category_id:int) -> CategoryResult:
 async def get_one_design(design_id: int) -> DesignBaseModel:
     return get_design(sql.cursor(buffered=True), sql.cursor(buffered=True), design_id, False)
 
-# # save item to cart
-# @app.post("/cart/add")
-# async def get_one_design(design_id: int) -> DesignBaseModel:
-#     with sql.cursor() as db_connection:
-#         return get_design(sql.cursor(buffered=True), sql.cursor(buffered=True), design_id, False)
+
+# save item to cart
+@app.post("/cart/add")
+async def add_to_cart(data: AddToCartBody) -> AddToCartBaseModel:
+    session_key = cart_add_design(sql, data)
+    return session_key
+
+
+# get cart count
+@app.get("/cart/count/{session_key}")
+async def cart_count(session_key: str) -> CartCountBaseModel:
+    return users_cart_count(sql, session_key)
+
+
+# get cart count
+@app.get("/cart/{session_key}")
+async def get_cart_data(session_key: str) -> CartBaseModel:
+    if session_key == 'false':
+        return CartResponse([]).asdict()
+
+    return get_cart(sql.cursor(), session_key)
