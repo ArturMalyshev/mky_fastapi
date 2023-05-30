@@ -24,7 +24,6 @@ class Category(object):
     description = ""
     image = ""
 
-    # The class "constructor" - It's actually an initializer
     def __init__(self, cat_id, parent_cat_id, name, description, image):
         self.id = cat_id
         self.parent_cat_id = parent_cat_id

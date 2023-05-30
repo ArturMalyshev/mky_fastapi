@@ -2,10 +2,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from mysql.connector import connect, Error
 
+from model.Payload.create import new_payment
+from model.Payload.payload import NewPayloadBody
+from model.Cart.remove import DropFromCartBody, remove_from_cart
 from model.Cart.cart import CartBaseModel, CartResponse
 from model.Cart.get import CartCountBaseModel, users_cart_count, get_cart
 from model.Cart.add import cart_add_design, AddToCartBaseModel, AddToCartBody
-from config.cors import origins
+from config.main import cors_origins
 from model.Category.category import get_category, CategoryResult
 from model.Design.design import get_design, DesignBaseModel
 
@@ -20,7 +23,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -60,3 +63,19 @@ async def get_cart_data(session_key: str) -> CartBaseModel:
         return CartResponse([]).asdict()
 
     return get_cart(sql.cursor(), session_key)
+
+
+# get cart countasdf
+@app.post("/cart/remove")
+async def drop_from_cart(data: DropFromCartBody) -> CartBaseModel:
+    result = remove_from_cart(sql, data.session, data.cart_id)
+    if result:
+        return get_cart(sql.cursor(), data.session)
+
+
+
+# create payment
+@app.post("/payment/new")
+async def create_payment(data: NewPayloadBody):
+    return new_payment(sql, data)
+

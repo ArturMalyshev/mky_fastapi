@@ -23,7 +23,8 @@ def get_cart(db, session_key):
           " cart.clothes_size," \
           " dtc.result_path," \
           " (d.design_price + c.price + ds.price + dtc.price) as price," \
-          " cart.cart_id" \
+          " cart.cart_id," \
+          " d.design_id" \
           " FROM cart" \
           " INNER JOIN sessions s on cart.session_id = s.session_id" \
           " LEFT JOIN design d on cart.design_id = d.design_id" \
@@ -34,7 +35,7 @@ def get_cart(db, session_key):
     db.execute(sql, [session_key])
     result = []
     for cart in db:
-        result.append(Cart(cart[0], cart[4], cart[1], cart[2], cart[3], cart[5], cart[6], cart[7]).asdict())
+        result.append(Cart(cart[0], cart[4], cart[1], cart[2], cart[3], cart[5], cart[6], cart[7], cart[8]).asdict())
     return CartResponse(result).asdict()
 
 

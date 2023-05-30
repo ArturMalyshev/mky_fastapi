@@ -1,4 +1,7 @@
 RUN DOCKER ---------------  docker run -it -p 8888:8000 kartuh/py_api
+docker run -it -p 8000:8000 -v ./api:/app  kartuh/py_api
+
+
 RUN DOCKER BUILD ---------  docker build -t kartuh/py_api .
 
 RUN API ------------------  python -m uvicorn main:app --reload
